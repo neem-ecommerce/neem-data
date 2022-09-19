@@ -1,0 +1,27 @@
+version: "3.3"
+networks:
+  default:
+    external: true
+    name: neem-net
+services:
+  neem-db:
+    image: postgres
+    container_name: neem-db
+    hostname: neem-db
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - 5433:5432
+  neem-migrate:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+  neem-seed:
+    image: golang
+    working_dir: /seed
+    volumes:
+      - ./seed:/seed
+    environment:
+      - DB_URL=${DB_URL}
